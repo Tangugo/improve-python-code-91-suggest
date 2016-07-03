@@ -1,0 +1,114 @@
+建议9：数值交换
+	a = 1
+	b = 2
+	a, b = b, a
+
+	from timeit import Timer
+	Timer('tmp=x; x=y; y=tmp', 'x=1, y=2').timeit()
+	Timer('x, y = y, x', 'x=1, y=2').timeit()
+
+建议10：充分利用Lazy evaluation的特性
+	def fib():
+		a, b = 0, 1
+		while True:
+			yield a
+			a, b = b, a+b
+
+	from itertools import islice
+	print list(islice(fib(), 5))
+	[0, 1, 2, 3]
+
+建议12：不推荐使用type进行类型检查
+	使用：isinstance(object, class-or-type-or-tuple) -> bool
+
+建议14：警惕eval()的安全漏洞
+	eval(source[, globals[, locals]]) -> value
+	eval('1+1=2')	# 进行判断
+	True
+	eval("'A' + 'B'")	# 字符连接
+	'AB'
+	eval("1+2")	数值相加
+	3
+
+建议16：分清 == 与is的使用场景
+	== 表示的意思是相等
+	is 表示的是对象标示符(对象的内存地址id)
+
+	a = 'hello'
+	b = ''.join(['h', 'e', 'l', 'l', 'o'])
+	a == b --> True
+	a is b --> False
+
+建议19：有节制地使用from...import语句
+	1、命名空间的冲突：
+		# a.py
+		def add():
+			print 'add in module A'
+
+		# b.py
+		def add():
+			print 'add in module B'
+
+		# c.py
+		from a import add
+		from b import add
+
+		add()	# b 覆盖 a中的add方法 (add in module B)
+	2、循环嵌套导入的问题
+		# a.py
+		from b import g
+		def x():
+			pass
+
+		# b.py
+		from a import x
+		def g():
+			pass
+
+		# ImportError: cannot import name g
+		# 换成import导入则不会报错
+
+建议21：i+=1 不等于 ++i
+	i = 1
+	i += 1 --> 2
+	++i --> 1
+
+建议26：深入理解None，正确判断对象是否为空
+	Python中以下数据会当做空来处理：
+		常量 None
+		常量 False
+		任何形式的数值类型零，如0、0L、0.0、0j
+		空的序列，如''、()、[]
+		空的字典 {}
+		当用户自定义的类中定义了nonzero()方法和len()方法，并且该方法返回整数0或者布尔值False的时候
+
+	None它既不时0，False，也不是空字符串，它是一个空的对象，其数据类型为NoneType。
+	None与任何非None对象比较结果都为False。
+
+建议27：连接字符串应优先使用join而不是+
+	s1 + s2 + s3 + ... + sn, 执行一次'+'操作便会在内存中申请一块新的内存空间，并将上一次操作的结果和本次操作的右操作数复制到新的申请内存空间，需申请n-1次内存，从而严重影响执行效率
+
+建议28：格式化字符串时尽量使用.format方式而不是%
+
+
+建议29：区别对待可变对象和不可变对象
+	不可变对象：数字、字符串、元组
+	可变对象：字典、列表、字节数组
+
+	面试中常考：
+	a = 1
+	def test(args):
+		a = args
+	print a
+
+	# test(2)
+	# print 1
+
+	lst = [1, 2, 3]
+	def test(args):
+		lst.append(lst)
+	print lst
+
+	# test('a')
+	# print [1, 2, 3, 'a']
+
