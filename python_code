@@ -112,3 +112,60 @@
 	# test('a')
 	# print [1, 2, 3, 'a']
 
+建议31：函数传参既不是传值页不是传引用
+	可变对象传引用，不可变对象传值
+		a = 1
+		def test(num):
+			a = num
+		# print a
+		# 1
+
+		lst = range(5)
+		def test(lst):
+			lst.append(5)
+		# print lst
+		# [0, 1, 2, 3, 4, 5]
+
+建议34：深入理解str()和repr()的区别
+	str面向用户，repr面向解析器
+
+建议37：按需选择sort()或者sorted()
+	lst = [3, 1, 5, 2, 4]
+	import copy
+	lst_1 = copy.deecopy(lst)
+	lst.sort(lst)
+	# print lst
+	# [1, 2, 3, 4, 5]
+
+	lst_2 = sorted(lst_1)
+	# print lst_1
+	# [3, 1, 5, 2, 4]
+	# print lst_2
+	# [1, 2, 3, 4, 5]
+
+	sort()在原有的列表上进行排序
+	sorted()复制新的列表进行排序并输出排序后的列表
+
+	排序：
+		对字典进行排序
+			phonebook = {'Linda': '3340', 'Bob': '9381', 'Carol': '4212'}
+			from operator import itemgetter
+			sorted_pb = sorted(phonebook.iteritems(), key=itemgetter(1))
+			# print sorted_pb
+			[('Linda', '3340'), ('Carol': '4212'), ('Bob': '9381')]
+
+建议40：深入掌握ConfigParser
+	$ cat example.conf
+	[DEFAULT]
+	in_default = 'hello world'
+	[section1]
+
+	$ cat readini.py
+	import ComfigParser
+	conf = ComfigParser.ConfigParser()
+	conf.read('example.conf')
+	print conf.get('secton1', 'in_default')
+
+	$ python readini.py
+	'hello world'
+
